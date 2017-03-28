@@ -27,10 +27,6 @@
 *Add following code in your init.go*
 
 	func initApp() {
-		Config, err := revel.LoadConfig("app.conf")
-		if err != nil || Config == nil {
-			log.Fatalf("%+v",err)
-		}
 		mongodb.MaxPool = revel.Config.IntDefault("mongo.maxPool", 0)
 		mongodb.PATH,_ = revel.Config.String("mongo.path")
 		mongodb.DBNAME, _ = revel.Config.String("mongo.database")

@@ -9,22 +9,18 @@ var cmdMgoSetup = &Command{
 	UsageLine: "mgo:setup",
 	Short:     "setup mongodb in your Revel application",
 	Long: `
-Create new files such database.go, driver.go, collection.go, service.go in mongodb package under app/models path. Congiuration is required. 
-Add following in your app.conf under [env]. 
+Create new files such database.go, driver.go, collection.go, service.go in mongodb package under app/models path. Congiuration is required.
+Add following in your app.conf under [env].
 	mongo.database = revel_sample_dev
 	mongo.path = localhost
 	mongo.maxPool = 20
 
 Add following code in your init.go
-   	
+
    	revel.OnAppStart(initApp)
 
 	// initApp contains all application level initialization
 	func initApp() {
-		Config, err := revel.LoadConfig("app.conf")
-		if err != nil || Config == nil {
-			log.Fatalf("%+v",err)
-		}
 		mongodb.MaxPool = revel.Config.IntDefault("mongo.maxPool", 0)
 		mongodb.PATH,_ = revel.Config.String("mongo.path")
 		mongodb.DBNAME, _ = revel.Config.String("mongo.database")
@@ -173,7 +169,7 @@ func mgoSetup(cmd *Command, args []string) {
 
 	// get mongodb package path
 	databaseFolder := path.Join(pwd, "app", "models", "mongodb")
-	
+
 	// mongodb setup files
 	files := []string{"database","collection","driver","service"}
 
@@ -191,7 +187,7 @@ func mgoSetup(cmd *Command, args []string) {
 			switch filename{
 			case "database":
 				content = databaseTpl
-			case "collection": 
+			case "collection":
 			    content = collectionTpl
 			case "driver":
 				content = driverTpl
@@ -202,7 +198,7 @@ func mgoSetup(cmd *Command, args []string) {
 			ColorLog("[SUCC] mongo file generated as '%s' .\n", databaseFile)
 		} else {
 			ColorLog("Missing database.go.\n '%s' \nRun 'revel help db' for usage.\n", err)
-		}	
+		}
 	}
 	ColorLog("[SUCC] mongodb package now in your project.\n")
 	ColorLog("[SUCC] Please add database config in your 'app.conf'.\n")
