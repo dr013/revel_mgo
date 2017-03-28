@@ -8,7 +8,7 @@ import(
 
 // generate controller
 func generateController(cname, crupath string) {
-	// get controller name and package 
+	// get controller name and package
 	p, f := path.Split(cname)
 
 	// set controller name to uppercase
@@ -21,7 +21,7 @@ func generateController(cname, crupath string) {
 		packageName = p[i+1 : len(p)-1]
 	}
 
-	// get struct for controller 
+	// get struct for controller
 	controllerStruct, err := GetControllerStruct(controllerName)
 	if err != nil {
 		ColorLog("[ERRO] Could not genrate controllers struct: %s\n", err)
@@ -45,8 +45,8 @@ func generateController(cname, crupath string) {
 	commonCtrFp := path.Join(crupath, "app", "controllers", "controller.go")
 	if _, err := os.Stat(commonCtrFp); os.IsNotExist(err) {
 		if cf, err := os.OpenFile(commonCtrFp, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0666); err == nil {
-			defer cf.Close()	
-			content := strings.Replace(commonTpl, "{{packageName}}", packageName, -1)		
+			defer cf.Close()
+			content := strings.Replace(commonTpl, "{{packageName}}", packageName, -1)
 			cf.WriteString(content)
 			// gofmt generated source code
 			FormatSourceCode(commonCtrFp)
@@ -80,8 +80,8 @@ func generateController(cname, crupath string) {
 		content = strings.Replace(content, "{{modelObject}}", strings.ToLower(controllerName), -1)
 		content = strings.Replace(content, "{{modelStruct}}", controllerName, -1)
 		content = strings.Replace(content, "{{modelStructs}}", controllerName + "s", -1)
-		
-		
+
+
 		f.WriteString(content)
 		// gofmt generated source code
 		FormatSourceCode(fpath)
@@ -102,10 +102,10 @@ func deleteController(cname, crupath string) {
 		err = os.Remove(filePath)
 		if err != nil{
 			ColorLog("[ERRO] Could not delete controller struct: %s\n", err)
-			os.Exit(2)	
+			os.Exit(2)
 		}
 		ColorLog("[INFO] controller file deleted: %s\n", filePath)
-		
+
 	}
 
 }
@@ -167,7 +167,7 @@ import (
 
 {{controllerStruct}}
 
-func (c {{contorllerStructName}}) Index() revel.Result {  
+func (c {{contorllerStructName}}) Index() revel.Result {
 	var (
 		{{modelObjects}} []models.{{modelStruct}}
 		err error
@@ -176,44 +176,44 @@ func (c {{contorllerStructName}}) Index() revel.Result {
 	if err != nil{
 		errResp := buildErrResponse(err,"500")
 		c.Response.Status = 500
-		return c.RenderJson(errResp)
+		return c.RenderJSON(errResp)
 	}
 	c.Response.Status = 200
-    return c.RenderJson({{modelObjects}})
+    return c.RenderJSON({{modelObjects}})
 }
 
-func (c {{contorllerStructName}}) Show(id string) revel.Result {  
+func (c {{contorllerStructName}}) Show(id string) revel.Result {
     var (
     	{{modelObject}} models.{{modelStruct}}
     	err error
-    	{{modelObject}}ID bson.ObjectId 
+    	{{modelObject}}ID bson.ObjectId
     )
 
     if id == ""{
     	errResp := buildErrResponse(errors.New("Invalid {{modelObject}} id format"),"400")
     	c.Response.Status = 400
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
 
     {{modelObject}}ID, err = convertToObjectIdHex(id)
     if err != nil{
     	errResp := buildErrResponse(errors.New("Invalid {{modelObject}} id format"),"400")
     	c.Response.Status = 400
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
 
     {{modelObject}}, err = models.Get{{modelStruct}}({{modelObject}}ID)
     if err != nil{
     	errResp := buildErrResponse(err,"500")
     	c.Response.Status = 500
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
-  
+
     c.Response.Status = 200
-    return c.RenderJson({{modelObject}})
+    return c.RenderJSON({{modelObject}})
 }
 
-func (c {{contorllerStructName}}) Create() revel.Result {  
+func (c {{contorllerStructName}}) Create() revel.Result {
     var (
     	{{modelObject}} models.{{modelStruct}}
     	err error
@@ -223,20 +223,20 @@ func (c {{contorllerStructName}}) Create() revel.Result {
 	if err != nil {
 		errResp := buildErrResponse(err, "403")
 		c.Response.Status = 403
-		return c.RenderJson(errResp)
+		return c.RenderJSON(errResp)
 	}
 
 	{{modelObject}}, err = models.Add{{modelStruct}}({{modelObject}})
 	if err != nil{
 		errResp := buildErrResponse(err,"500")
     	c.Response.Status = 500
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
 	}
     c.Response.Status = 201
-    return c.RenderJson({{modelObject}})
+    return c.RenderJSON({{modelObject}})
 }
 
-func (c {{contorllerStructName}}) Update() revel.Result {  
+func (c {{contorllerStructName}}) Update() revel.Result {
 	var (
     	{{modelObject}} models.{{modelStruct}}
     	err error
@@ -245,51 +245,51 @@ func (c {{contorllerStructName}}) Update() revel.Result {
 	if err != nil{
 		errResp := buildErrResponse(err,"400")
     	c.Response.Status = 400
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
 	}
 
 	err = {{modelObject}}.Update{{modelStruct}}()
 	if err != nil{
 		errResp := buildErrResponse(err,"500")
     	c.Response.Status = 500
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
 	}
-    return c.RenderJson({{modelObject}})
+    return c.RenderJSON({{modelObject}})
 }
 
-func (c {{contorllerStructName}}) Delete(id string) revel.Result { 
+func (c {{contorllerStructName}}) Delete(id string) revel.Result {
 	var (
     	err error
     	{{modelObject}} models.{{modelStruct}}
-    	{{modelObject}}ID bson.ObjectId 
+    	{{modelObject}}ID bson.ObjectId
     )
      if id == ""{
     	errResp := buildErrResponse(errors.New("Invalid {{modelObject}} id format"),"400")
     	c.Response.Status = 400
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
 
     {{modelObject}}ID, err = convertToObjectIdHex(id)
     if err != nil{
     	errResp := buildErrResponse(errors.New("Invalid {{modelObject}} id format"),"400")
     	c.Response.Status = 400
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
 
     {{modelObject}}, err = models.Get{{modelStruct}}({{modelObject}}ID)
     if err != nil{
     	errResp := buildErrResponse(err,"500")
     	c.Response.Status = 500
-    	return c.RenderJson(errResp)
+    	return c.RenderJSON(errResp)
     }
 	err = {{modelObject}}.Delete{{modelStruct}}()
 	if err != nil{
 		errResp := buildErrResponse(err,"500")
     	c.Response.Status = 500
-    	return c.RenderJson(errResp)
-	} 
+    	return c.RenderJSON(errResp)
+	}
 	c.Response.Status = 204
-    return c.RenderJson(nil)
+    return c.RenderJSON(nil)
 }
 `
 

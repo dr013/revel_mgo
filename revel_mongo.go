@@ -104,7 +104,7 @@ func errorf(format string, args ...interface{}) {
 }
 
 const header = `~
-~ revel_mgo! https://github.com/kyawmyintthein/revel_mgo
+~ revel_mgo! https://github.com/dr013/revel_mgo
 ~
 `
 

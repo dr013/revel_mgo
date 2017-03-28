@@ -7,7 +7,7 @@
   It can also generate models and controllers for your RESTFul API with revel framework. 
 
 ## Installation
-    go get github.com/kyawmyintthein/revel_mgo
+    go get github.com/dr013/revel_mgo
     cd $GOPATH/src/path/to/revel_mgo
     go install revel_mgo
 
